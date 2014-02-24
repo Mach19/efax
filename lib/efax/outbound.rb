@@ -25,37 +25,21 @@ module EFax
 
   # Base class for OutboundRequest and OutboundStatus classes
   class Request
-    def self.user
-      @@user
-    end
-    def self.user=(name)
-      @@user = name
-    end
+    
+    attr_accessor :user
+    attr_accessor :account_id
+    attr_accessor :password       
 
-    def self.password
-      @@password
-    end
-    def self.password=(password)
-      @@password = password
-    end
-
-    def self.account_id
-      @@account_id
-    end
-    def self.account_id=(id)
-      @@account_id = id
-    end
-
-    def self.params(content)
+    def params(content)
       escaped_xml = ::URI.escape(content, Regexp.new("[^#{::URI::PATTERN::UNRESERVED}]"))
-      "id=#{account_id}&xml=#{escaped_xml}&respond=XML"
+      "id=#{@account_id}&xml=#{escaped_xml}&respond=XML"
     end
 
     private_class_method :params
   end
 
   class OutboundRequest < Request
-    def self.post(name, company, fax_number, subject, callback_url, content, content_type = :html)
+    def post(name, company, fax_number, subject, callback_url, content, content_type = :html)
       xml_request = xml(name, company, fax_number, subject, callback_url, content, content_type)
       response = Net::HTTPS.start(EFax::Uri.host, EFax::Uri.port) do |https|
         https.post(EFax::Uri.path, params(xml_request), EFax::HEADERS)
@@ -63,14 +47,14 @@ module EFax
       OutboundResponse.new(response)
     end
 
-    def self.xml(name, company, fax_number, subject, callback_url, content, content_type = :html)
+    def xml(name, company, fax_number, subject, callback_url, content, content_type = :html)
       xml_request = ""
       xml = Builder::XmlMarkup.new(:target => xml_request, :indent => 2 )
       xml.instruct! :xml, :version => '1.0'
       xml.OutboundRequest do
         xml.AccessControl do
-          xml.UserName(self.user)
-          xml.Password(self.password)
+          xml.UserName(@user)
+          xml.Password(@password)
         end
         xml.Transmission do
           xml.TransmissionControl do
@@ -137,7 +121,7 @@ module EFax
   end
 
   class OutboundStatus < Request
-    def self.post(doc_id)
+    def post(doc_id)
       data = params(xml(doc_id))
       response = Net::HTTPS.start(EFax::Uri.host, EFax::Uri.port) do |https|
         https.post(EFax::Uri.path, data, EFax::HEADERS)
@@ -145,14 +129,14 @@ module EFax
       OutboundStatusResponse.new(response)
     end
 
-    def self.xml(doc_id)
+    def xml(doc_id)
       xml_request = ""
       xml = Builder::XmlMarkup.new(:target => xml_request, :indent => 2 )
       xml.instruct! :xml, :version => '1.0'
       xml.OutboundStatus do
         xml.AccessControl do
-          xml.UserName(self.user)
-          xml.Password(self.password)
+          xml.UserName(@user)
+          xml.Password(@password)
         end
         xml.Transmission do
           xml.TransmissionControl do
