@@ -47,6 +47,7 @@ module EFax
       OutboundResponse.new(response)
     end
 
+    private
     def xml(name, company, fax_number, subject, callback_url, content, content_type = :html)
       xml_request = ""
       xml = Builder::XmlMarkup.new(:target => xml_request, :indent => 2 )
@@ -87,8 +88,7 @@ module EFax
       end
       xml_request
     end
-
-    private_class_method :xml
+    
   end
 
   class RequestStatus
@@ -129,6 +129,7 @@ module EFax
       OutboundStatusResponse.new(response)
     end
 
+    private
     def xml(doc_id)
       xml_request = ""
       xml = Builder::XmlMarkup.new(:target => xml_request, :indent => 2 )
@@ -146,8 +147,7 @@ module EFax
       end
       xml_request
     end
-
-    private_class_method :xml
+    
   end
 
   class QueryStatus
