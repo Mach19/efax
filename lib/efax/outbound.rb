@@ -30,12 +30,12 @@ module EFax
     attr_accessor :account_id
     attr_accessor :password       
 
+    private 
     def params(content)
       escaped_xml = ::URI.escape(content, Regexp.new("[^#{::URI::PATTERN::UNRESERVED}]"))
       "id=#{@account_id}&xml=#{escaped_xml}&respond=XML"
     end
-
-    private_class_method :params
+    
   end
 
   class OutboundRequest < Request
