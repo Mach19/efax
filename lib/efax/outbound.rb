@@ -206,7 +206,7 @@ module EFax
       if response.is_a? String
         doc = Hpricot(response).at(:outbounddisposition)
         @doc_id = doc[:docid]
-        @status_code = doc[:faxstatus]
+        @status_code = doc[:faxstatus].to_i
         @completion_data = doc[:completiondate]
         @csid = doc[:recipientcsid]
         @duration = doc[:duration]
