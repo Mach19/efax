@@ -191,4 +191,29 @@ module EFax
     end
 
   end
+  
+  class OutboundDispositionResponse
+    attr_reader :doc_id
+    attr_reader :status_code      
+    attr_reader :completion_data
+    attr_reader :csid
+    attr_reader :duration
+    attr_reader :pages_sent
+    attr_reader :num_retries
+    attr_reader :fax_number   
+
+    def initialize(response) #:nodoc:
+      if response.is_a? String
+        doc = Hpricot(response).at(:outbounddisposition)
+        @doc_id = doc[:docid]
+        @status_code = doc[:faxstatus]
+        @completion_data = doc[:completiondate]
+        @csid = doc[:recipientcsid]
+        @duration = doc[:duration]
+        @pages_sent = doc[:pagessent]
+        @num_retries = doc[:numberofretries]
+        @fax_number = doc[:faxnumber]               
+      end      
+    end
+  end
 end
