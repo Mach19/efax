@@ -195,7 +195,7 @@ module EFax
   class OutboundDispositionResponse
     attr_reader :doc_id
     attr_reader :status_code      
-    attr_reader :completion_data
+    attr_reader :completion_date
     attr_reader :csid
     attr_reader :duration
     attr_reader :pages_sent
@@ -207,7 +207,7 @@ module EFax
         doc = Hpricot(response).at(:outbounddisposition)
         @doc_id = doc[:docid]
         @status_code = doc[:faxstatus].to_i
-        @completion_data = doc[:completiondate]
+        @completion_date = doc[:completiondate]
         @csid = doc[:recipientcsid]
         @duration = doc[:duration]
         @pages_sent = doc[:pagessent]
