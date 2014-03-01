@@ -39,8 +39,8 @@ module EFax
   end
 
   class OutboundRequest < Request
-    def post(name, company, fax_number, subject, callback_url, content, content_type = :html)
-      xml_request = xml(name, company, fax_number, subject, callback_url, content, content_type)
+    def post(name, company, fax_number, subject, disposition_address, content, content_type = :html, disposition_method = :post)
+      xml_request = xml(name, company, fax_number, subject, disposition_address, content, content_type)
       puts xml_request
       response = Net::HTTPS.start(EFax::Uri.host, EFax::Uri.port) do |https|
         https.post(EFax::Uri.path, params(xml_request), EFax::HEADERS)
@@ -49,7 +49,7 @@ module EFax
     end
 
     private
-    def xml(name, company, fax_number, subject, callback_url, content, content_type = :html)
+    def xml(name, company, fax_number, subject, disposition_address, content, content_type = :html, disposition_method = :post)
       xml_request = ""
       xml = Builder::XmlMarkup.new(:target => xml_request, :indent => 2 )
       xml.instruct! :xml, :version => '1.0'
@@ -66,9 +66,17 @@ module EFax
             xml.FaxHeader(subject)            
           end
           xml.DispositionControl do
-            xml.DispositionURL(callback_url)
+            xml.DispositionURL(disposition_address) if (disposition_method == :post)
             xml.DispositionLevel("BOTH")
-            xml.DispositionMethod("POST")            
+            if (disposition_method == :post)
+              xml.DispositionMethod("POST")  
+            else
+              xml.DispositionEmails do
+                xml.DispositionEmail do
+                  xml.DispositionAddress(disposition_address)
+                end
+              end
+            end
           end
           xml.Recipients do
             xml.Recipient do
