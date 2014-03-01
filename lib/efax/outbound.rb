@@ -71,6 +71,7 @@ module EFax
             if (disposition_method == :post)
               xml.DispositionMethod("POST")  
             else
+              xml.DispositionMethod("EMAIL")  
               xml.DispositionEmails do
                 xml.DispositionEmail do
                   xml.DispositionAddress(disposition_address)
