@@ -40,7 +40,7 @@ module EFax
 
   class OutboundRequest < Request
     def post(name, company, fax_number, subject, disposition_address, content, content_type = :html, disposition_method = :post)
-      xml_request = xml(name, company, fax_number, subject, disposition_address, content, content_type)
+      xml_request = xml(name, company, fax_number, subject, disposition_address, content, content_type, disposition_method)
       puts xml_request
       response = Net::HTTPS.start(EFax::Uri.host, EFax::Uri.port) do |https|
         https.post(EFax::Uri.path, params(xml_request), EFax::HEADERS)
