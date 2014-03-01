@@ -62,8 +62,7 @@ module EFax
             xml.Resolution("STANDARD")
             xml.Priority("NORMAL")
             xml.SelfBusy("ENABLE")
-            xml.FaxHeader(subject)
-            xml.NoDuplicates("DISABLE")
+            xml.FaxHeader(subject)            
           end
           xml.DispositionControl do
             xml.DispositionURL(callback_url)
