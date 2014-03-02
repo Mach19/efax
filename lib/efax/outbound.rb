@@ -44,7 +44,7 @@ module EFax
       response = Net::HTTPS.start(EFax::Uri.host, EFax::Uri.port) do |https|
         https.post(EFax::Uri.path, params(xml_request), EFax::HEADERS)
       end
-      OutboundResponse.new(response)
+      [OutboundResponse.new(response), xml_request]
     end
 
     private
